@@ -1,0 +1,28 @@
+name: Validate site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Validate required files
+        run: |
+          set -e
+          test -f index.html
+          test -f style.css
+          test -f script.js
+          test -f 404.html
+          grep -q '<html lang="en">' index.html
+          grep -q 'id="projectForm"' index.html
+          grep -q 'id="caseModal"' index.html
+          grep -q 'style.css' index.html
+          grep -q 'script.js' index.html
+          grep -q 'loomWhatsApp' script.js
+          echo "LOOM frontend validation passed."
