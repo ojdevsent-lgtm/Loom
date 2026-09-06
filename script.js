@@ -1,7 +1,19 @@
 const form = document.getElementById('projectForm');
+const status = document.getElementById('formStatus');
+const menuToggle = document.querySelector('.menu-toggle');
+const mobileMenu = document.querySelector('.mobile-menu');
 const loomWhatsApp = '2349047868006';
 
-form.addEventListener('submit', (event) => {
+menuToggle?.addEventListener('click', () => {
+  const open = mobileMenu.classList.toggle('open');
+  menuToggle.setAttribute('aria-expanded', String(open));
+});
+
+document.querySelectorAll('.mobile-menu a').forEach(link => link.addEventListener('click', () => {
+  mobileMenu.classList.remove('open');
+}));
+
+form.addEventListener('submit', event => {
   event.preventDefault();
   const data = new FormData(form);
   const message = [
@@ -18,5 +30,10 @@ form.addEventListener('submit', (event) => {
     `Project details: ${data.get('details')}`
   ].join('\n');
 
-  window.open(`https://wa.me/${loomWhatsApp}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+  status.textContent = 'Opening WhatsApp…';
+  const url = `https://wa.me/${loomWhatsApp}?text=${encodeURIComponent(message)}`;
+  const popup = window.open(url, '_blank', 'noopener,noreferrer');
+  if (!popup) {
+    status.textContent = 'WhatsApp was blocked. Please allow pop-ups or use the WhatsApp link in the footer.';
+  }
 });
